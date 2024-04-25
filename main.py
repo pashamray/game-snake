@@ -12,7 +12,7 @@ clock = pygame.time.Clock()
 running = True
 dt = 0
 dx = 0
-dy = 0
+dy = -1
 x = screen.get_width() / 2
 y = screen.get_height() / 2
 
@@ -30,11 +30,14 @@ while running:
             running = False
 
     # fill the screen with a color to wipe away anything from last frame
-    screen.fill("dark green")
+    screen.fill((92, 64, 51))
 
     # draw snake
-    for rect in snake:
-        pygame.draw.rect(screen, "green", rect, 1, border_radius=4)
+    for i, rect in enumerate(snake):
+        color = "dark green"
+        if i == 0:
+            color = "green"
+        pygame.draw.rect(screen, color, rect, 2, border_radius=4)
 
     keys = pygame.key.get_pressed()
     if keys[pygame.K_w]:
@@ -50,11 +53,13 @@ while running:
         dx = 1
         dy = 0
 
-    x += dx * SIZE
-    y += dy * SIZE
+    if dt > 500:
+        dt = 0
+        x += dx * SIZE
+        y += dy * SIZE
 
-    snake.insert(0, (x, y, SIZE, SIZE))
-    snake.pop()
+        snake.insert(0, (x, y, SIZE, SIZE))
+        snake.pop()
 
     # flip() the display to put your work on screen
     pygame.display.flip()
@@ -62,6 +67,6 @@ while running:
     # limits FPS to 60
     # dt is delta time in seconds since last frame, used for framerate-
     # independent physics.
-    dt = clock.tick(5)
+    dt += clock.tick(60)
 
 pygame.quit()
