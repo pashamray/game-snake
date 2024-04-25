@@ -20,7 +20,9 @@ snake = []
 snake_len = 3
 
 for i in range(snake_len):
-    snake.append((x, y + (i * SIZE), SIZE, SIZE))
+    snake.append((x, y + (i * SIZE)))
+
+apple = (x + SIZE, y + SIZE)
 
 while running:
     # poll for events
@@ -33,11 +35,15 @@ while running:
     screen.fill((92, 64, 51))
 
     # draw snake
-    for i, rect in enumerate(snake):
+    for i, (snakeX, snakeY) in enumerate(snake):
         color = "dark green"
         if i == 0:
             color = "green"
-        pygame.draw.rect(screen, color, rect, 2, border_radius=4)
+        pygame.draw.rect(screen, color, (snakeX, snakeY, SIZE, SIZE), 2, border_radius=4)
+
+    # draw apple
+    (appleX, appleY) = apple
+    pygame.draw.rect(screen, "red", (appleX, appleY, SIZE, SIZE), border_radius=int(SIZE / 2))
 
     keys = pygame.key.get_pressed()
     if keys[pygame.K_w]:
@@ -53,13 +59,14 @@ while running:
         dx = 1
         dy = 0
 
-    if dt > 500:
+    if dt > 300:
         dt = 0
         x += dx * SIZE
         y += dy * SIZE
 
-        snake.insert(0, (x, y, SIZE, SIZE))
-        snake.pop()
+        if snake[0] != apple:
+            snake.pop()
+        snake.insert(0, (x, y))
 
     # flip() the display to put your work on screen
     pygame.display.flip()
