@@ -37,10 +37,11 @@ while running:
 
     # draw snake
     for i, (snakeX, snakeY) in enumerate(snake):
-        color = (92, 64, 51)
+        color = "green"
+        width = 2
         if i == 0:
-            color = "green"
-        pygame.draw.rect(screen, color, (snakeX, snakeY, SIZE, SIZE), 2, border_radius=4)
+            width = 0
+        pygame.draw.rect(screen, color, (snakeX, snakeY, SIZE, SIZE), width, border_radius=4)
 
     # draw apple
     (appleX, appleY) = apple
