@@ -32,11 +32,11 @@ while running:
             running = False
 
     # fill the screen with a color to wipe away anything from last frame
-    screen.fill((92, 64, 51))
+    screen.fill("dark green")
 
     # draw snake
     for i, (snakeX, snakeY) in enumerate(snake):
-        color = "dark green"
+        color = (92, 64, 51)
         if i == 0:
             color = "green"
         pygame.draw.rect(screen, color, (snakeX, snakeY, SIZE, SIZE), 2, border_radius=4)
