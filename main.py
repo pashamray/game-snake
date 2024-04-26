@@ -61,10 +61,20 @@ while running:
         dx = 1
         dy = 0
 
-    if dt > 300:
+    if dt > 200:
         dt = 0
         x += dx * SIZE
         y += dy * SIZE
+
+        if x < 0:
+            x = WIDTH - SIZE
+        if x > WIDTH - SIZE:
+            x = 0
+
+        if y < 0:
+            y = HEIGHT - SIZE
+        if y > HEIGHT - SIZE:
+            y = 0
 
         if snake[0] != apple:
             snake.pop()
