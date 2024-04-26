@@ -67,6 +67,8 @@ while running:
 
         if snake[0] != apple:
             snake.pop()
+        if snake[0] == apple:
+            apple = (randrange(0, WIDTH, SIZE), randrange(0, HEIGHT, SIZE))
         snake.insert(0, (x, y))
 
     # flip() the display to put your work on screen
