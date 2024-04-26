@@ -1,3 +1,4 @@
+from random import randrange
 import pygame
 
 WIDTH = 800
@@ -22,7 +23,7 @@ snake_len = 3
 for i in range(snake_len):
     snake.append((x, y + (i * SIZE)))
 
-apple = (x + SIZE, y + SIZE)
+apple = (randrange(0, WIDTH, SIZE), randrange(0, HEIGHT, SIZE))
 
 while running:
     # poll for events
