@@ -11,11 +11,17 @@ pygame.init()
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 clock = pygame.time.Clock()
 running = True
+x = screen.get_width() / 2
+y = screen.get_height() / 2
+
 dt = 0
 dx = 0
 dy = -1
-x = screen.get_width() / 2
-y = screen.get_height() / 2
+
+dir_up = pygame.K_w
+dir_down = pygame.K_s
+dir_left = pygame.K_a
+dir_right = pygame.K_d
 
 snake = []
 snake_len = 3
@@ -26,12 +32,6 @@ for i in range(snake_len):
 apple = (randrange(0, WIDTH, SIZE), randrange(0, HEIGHT, SIZE))
 
 while running:
-    # poll for events
-    # pygame.QUIT event means the user clicked X to close your window
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
-
     # fill the screen with a color to wipe away anything from last frame
     screen.fill("dark green")
 
@@ -47,19 +47,16 @@ while running:
     (appleX, appleY) = apple
     pygame.draw.rect(screen, "red", (appleX, appleY, SIZE, SIZE), border_radius=int(SIZE / 2))
 
-    keys = pygame.key.get_pressed()
-    if keys[pygame.K_w]:
-        dx = 0
-        dy = -1
-    if keys[pygame.K_s]:
-        dx = 0
-        dy = 1
-    if keys[pygame.K_a]:
-        dx = -1
+    moves = pygame.key.get_pressed()
+    moves_x = (moves[dir_right] - moves[dir_left])
+    moves_y = (moves[dir_down] - moves[dir_up])
+
+    if dx == 0 and moves_x != 0:
+        dx = moves_x
         dy = 0
-    if keys[pygame.K_d]:
-        dx = 1
-        dy = 0
+    if dy == 0 and moves_y != 0:
+        dx = 0
+        dy = moves_y
 
     if dt > 200:
         dt = 0
@@ -89,5 +86,11 @@ while running:
     # dt is delta time in seconds since last frame, used for framerate-
     # independent physics.
     dt += clock.tick(60)
+
+    # poll for events
+    # pygame.QUIT event means the user clicked X to close your window
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
 
 pygame.quit()
