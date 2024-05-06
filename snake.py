@@ -21,7 +21,6 @@ class Snake:
 
         self.__moves = {"up": True, "down": False, "right": False, "left": False}
         self.__score = 0
-        self.__tick_count = 0
 
     def get_snake(self) -> list:
         return self.__snake
@@ -49,36 +48,31 @@ class Snake:
             self.__moves = {"up": False, "down": False, "right": False, "left": True}
 
     def tick(self) -> None:
-        self.__tick_count += 1
+        if self.__moves["up"]:
+            self.__y += -1
+            self.__x += 0
 
-        if self.__tick_count > 200:
-            self.__tick_count = 0
+        if self.__moves["down"]:
+            self.__y += 1
+            self.__x += 0
 
-            if self.__moves["up"]:
-                self.__y += -1
-                self.__x += 0
+        if self.__moves["right"]:
+            self.__y += 0
+            self.__x += 1
 
-            if self.__moves["down"]:
-                self.__y += 1
-                self.__x += 0
+        if self.__moves["left"]:
+            self.__y += 0
+            self.__x += -1
 
-            if self.__moves["right"]:
-                self.__y += 0
-                self.__x += 1
+        self.__snake.insert(0, (self.__x, self.__y))
+        last = self.__snake.pop()
+        try:
+            hint = self.__apples.index(self.__snake[0])
+            self.__apples.remove(self.__snake[0])
 
-            if self.__moves["left"]:
-                self.__y += 0
-                self.__x += -1
+            self.__score += 1
+            self.__apples.append((randrange(0, self.__width), randrange(0, self.__height)))
 
-            self.__snake.insert(0, (self.__x, self.__y))
-            last = self.__snake.pop()
-            try:
-                hint = self.__apples.index(self.__snake[0])
-                self.__apples.remove(self.__snake[0])
-
-                self.__score += 1
-                self.__apples.append((randrange(0, self.__width), randrange(0, self.__height)))
-
-                self.__snake.append(last)
-            except ValueError:
-                pass
+            self.__snake.append(last)
+        except ValueError:
+            pass

@@ -22,8 +22,11 @@ class Game:
 
         self.__clock = pygame.time.Clock()
 
-        self.__game = Snake((self.__game_screen.get_width() / self.__size, self.__game_screen.get_height() / self.__size))
+        self.__game = Snake(
+            (self.__game_screen.get_width() / self.__size, self.__game_screen.get_height() / self.__size))
         self.__running = True
+        self.__pause = False
+        self.__dt = 0
 
     def run(self) -> None:
         while self.__running:
@@ -37,11 +40,14 @@ class Game:
                 width = 2
                 if i == 0:
                     width = 0
-                pygame.draw.rect(self.__game_screen, color, (snakeX * self.__size, snakeY * self.__size, self.__size, self.__size), width, border_radius=4)
+                pygame.draw.rect(self.__game_screen, color,
+                                 (snakeX * self.__size, snakeY * self.__size, self.__size, self.__size), width,
+                                 border_radius=4)
 
             # draw apples
             for i, (appleX, appleY) in enumerate(self.__game.get_apples()):
-                pygame.draw.rect(self.__game_screen, "red", (appleX * self.__size, appleY * self.__size, self.__size, self.__size),
+                pygame.draw.rect(self.__game_screen, "red",
+                                 (appleX * self.__size, appleY * self.__size, self.__size, self.__size),
                                  border_radius=int(self.__size / 2))
 
             # draw scores
@@ -50,26 +56,33 @@ class Game:
             self.__screen.blit(score_txt, (20, 20))
             self.__screen.blit(score_num, (20, 40))
 
-            moves = pygame.key.get_pressed()
-            if moves[pygame.K_w]:
-                self.__game.move_up()
-
-            if moves[pygame.K_s]:
-                self.__game.move_down()
-
-            if moves[pygame.K_d]:
-                self.__game.move_right()
-
-            if moves[pygame.K_a]:
-                self.__game.move_left()
-
             # flip() the display to put your work on screen
             pygame.display.flip()
 
-            self.__game.tick()
+            if self.__dt > 50:
+                moves = pygame.key.get_pressed()
+                if moves[pygame.K_w]:
+                    self.__game.move_up()
+
+                if moves[pygame.K_s]:
+                    self.__game.move_down()
+
+                if moves[pygame.K_d]:
+                    self.__game.move_right()
+
+                if moves[pygame.K_a]:
+                    self.__game.move_left()
+
+                if moves[pygame.K_SPACE]:
+                    self.__pause = not self.__pause
+
+            if self.__dt > 200:
+                self.__dt = 0
+                if not self.__pause:
+                    self.__game.tick()
             # dt is delta time in seconds since last frame, used for framerate-
             # independent physics.
-            self.__clock.tick(1000)
+            self.__dt += self.__clock.tick(100)
 
             # poll for events
             # pygame.QUIT event means the user clicked X to close your window
