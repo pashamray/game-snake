@@ -1,7 +1,7 @@
 from random import randrange
 
 
-class Snake:
+class SnakeGame:
 
     def __init__(self, area: tuple):
         [self.__width, self.__height] = area
