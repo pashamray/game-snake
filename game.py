@@ -1,3 +1,5 @@
+import time
+
 import pygame
 
 from snakegame import SnakeGame
@@ -28,6 +30,7 @@ class Game:
         self.__pause = False
         self.__dtk = 0
         self.__dtg = 0
+        self.__start_time = time.perf_counter()
 
     def run(self) -> None:
         while self.__running:
@@ -58,8 +61,14 @@ class Game:
             # draw scores
             score_txt = self.__font.render("SCORE:", True, (255, 255, 255))
             score_num = self.__font.render(str(self.__game.get_score()), True, (255, 255, 255))
-            self.__screen.blit(score_txt, (20, 20))
-            self.__screen.blit(score_num, (20, 40))
+            self.__screen.blit(score_txt, (10, 20))
+            self.__screen.blit(score_num, (10, 40))
+
+            # draw time
+            time_txt = self.__font.render("TIME:", True, (255, 255, 255))
+            time_num = self.__font.render(time.strftime("%H:%M:%S",time.gmtime(time.perf_counter() - self.__start_time)), True, (255, 255, 255))
+            self.__screen.blit(time_txt, (10, 80))
+            self.__screen.blit(time_num, (10, 100))
 
             # flip() the display to put your work on screen
             pygame.display.flip()
