@@ -8,6 +8,8 @@ class Snake:
     __x = 0
     __y = 0
 
+    __score = 0
+
     __snake_len = 0
     __snake = []
 
@@ -39,6 +41,9 @@ class Snake:
 
     def get_apples(self) -> list:
         return self.__apples
+
+    def get_score(self) -> int:
+        return self.__score
 
     def move_up(self) -> None:
         if not self.__moves["down"]:
@@ -84,6 +89,7 @@ class Snake:
                 hint = self.__apples.index(self.__snake[0])
                 self.__apples.remove(self.__snake[0])
 
+                self.__score += 1
                 self.__apples.append((randrange(0, self.__width), randrange(0, self.__height)))
 
                 self.__snake.append(last)
