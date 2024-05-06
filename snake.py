@@ -2,23 +2,6 @@ from random import randrange
 
 
 class Snake:
-    __width = 0
-    __height = 0
-
-    __x = 0
-    __y = 0
-
-    __score = 0
-
-    __snake_len = 0
-    __snake = []
-
-    __apples_count = 0
-    __apples = []
-
-    __moves = {"up": False, "down": False, "right": False, "left": False}
-
-    __tick_count = 0
 
     def __init__(self, area: tuple):
         [self.__width, self.__height] = area
@@ -26,15 +9,19 @@ class Snake:
         self.__x = int(self.__width / 2)
         self.__y = int(self.__height / 2)
 
+        self.__snake = []
         self.__snake_len = 3
         for i in range(0, self.__snake_len):
             self.__snake.append((self.__x, self.__y + i))
 
+        self.__apples = []
         self.__apples_count = 2
         for i in range(0, self.__apples_count):
             self.__apples.append((randrange(0, self.__width), randrange(0, self.__height)))
 
         self.__moves = {"up": True, "down": False, "right": False, "left": False}
+        self.__score = 0
+        self.__tick_count = 0
 
     def get_snake(self) -> list:
         return self.__snake
