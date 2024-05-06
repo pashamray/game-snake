@@ -28,7 +28,7 @@ class Game:
     def run(self) -> None:
         while self.__running:
             # fill the screen with a color to wipe away anything from last frame
-            self.__screen.fill((2, 48, 32))
+            self.__screen.fill((8, 56, 32))
             self.__game_screen.fill("dark green")
 
             # draw snake
