@@ -21,7 +21,19 @@ class Game:
         self.__game_screen = self.__screen.subsurface(
             pygame.Rect(((width - game_width) / 2, (height - game_height) / 2, game_width, game_height))
         )
+        self.__game_over_screen = self.__screen.subsurface(
+            pygame.Rect(
+                (
+                    self.__screen.get_width() // 4,
+                    self.__screen.get_height() // 4,
+                    self.__screen.get_width() // 2,
+                    self.__screen.get_height() // 4
+                )
+            )
+        )
+
         self.__font = pygame.font.SysFont("notosansmono", 20)
+        self.__font_big = pygame.font.SysFont("notosansmono", 60)
         self.__game = SnakeGame(
             (self.__game_screen.get_width() / self.__size, self.__game_screen.get_height() / self.__size)
         )
@@ -34,41 +46,55 @@ class Game:
 
     def run(self) -> None:
         while self.__running:
-            # fill the screen with a color to wipe away anything from last frame
-            self.__screen.fill((8, 56, 32))
-            self.__game_screen.fill("dark green")
+            if not self.__game.get_game_over():
+                # fill the screen with a color to wipe away anything from last frame
+                self.__screen.fill((8, 56, 32))
+                self.__game_screen.fill("dark green")
 
-            # draw snake
-            for i, (snakeX, snakeY) in enumerate(self.__game.get_snake()):
-                color = "green"
-                width = 2
-                if i == 0:
-                    width = 0
-                pygame.draw.rect(
-                    self.__game_screen, color,
-                    (snakeX * self.__size, snakeY * self.__size, self.__size, self.__size), width,
-                    border_radius=4
+                # draw snake
+                for i, (snakeX, snakeY) in enumerate(self.__game.get_snake()):
+                    color = "green"
+                    width = 2
+                    if i == 0:
+                        width = 0
+                    pygame.draw.rect(
+                        self.__game_screen, color,
+                        (snakeX * self.__size, snakeY * self.__size, self.__size, self.__size), width,
+                        border_radius=4
+                    )
+
+                # draw apples
+                for i, (appleX, appleY) in enumerate(self.__game.get_apples()):
+                    pygame.draw.rect(
+                        self.__game_screen, "red",
+                        (appleX * self.__size, appleY * self.__size, self.__size, self.__size),
+                        border_radius=int(self.__size / 2)
+                    )
+
+                # draw scores
+                score_txt = self.__font.render("SCORE:", True, (255, 255, 255))
+                score_num = self.__font.render(str(self.__game.get_score()), True, (255, 255, 255))
+                self.__screen.blit(score_txt, (10, 20))
+                self.__screen.blit(score_num, (10, 40))
+
+                # draw time
+                time_txt = self.__font.render("TIME:", True, (255, 255, 255))
+                time_num = self.__font.render(time.strftime("%H:%M:%S",time.gmtime(time.perf_counter() - self.__start_time)), True, (255, 255, 255))
+                self.__screen.blit(time_txt, (10, 80))
+                self.__screen.blit(time_num, (10, 100))
+
+            # draw game over screen
+            if self.__game.get_game_over():
+                self.__game_over_screen.fill("red")
+                game_over_txt = self.__font_big.render("GAME OVER", True, (255, 255, 255))
+                self.__game_over_screen.blit(
+                    game_over_txt,
+                    (
+                        (self.__game_over_screen.get_width() - game_over_txt.get_width()) / 2,
+                        (self.__game_over_screen.get_height() - game_over_txt.get_height()) / 2,
+                    )
                 )
 
-            # draw apples
-            for i, (appleX, appleY) in enumerate(self.__game.get_apples()):
-                pygame.draw.rect(
-                    self.__game_screen, "red",
-                    (appleX * self.__size, appleY * self.__size, self.__size, self.__size),
-                    border_radius=int(self.__size / 2)
-                )
-
-            # draw scores
-            score_txt = self.__font.render("SCORE:", True, (255, 255, 255))
-            score_num = self.__font.render(str(self.__game.get_score()), True, (255, 255, 255))
-            self.__screen.blit(score_txt, (10, 20))
-            self.__screen.blit(score_num, (10, 40))
-
-            # draw time
-            time_txt = self.__font.render("TIME:", True, (255, 255, 255))
-            time_num = self.__font.render(time.strftime("%H:%M:%S",time.gmtime(time.perf_counter() - self.__start_time)), True, (255, 255, 255))
-            self.__screen.blit(time_txt, (10, 80))
-            self.__screen.blit(time_num, (10, 100))
 
             # flip() the display to put your work on screen
             pygame.display.flip()
@@ -91,7 +117,7 @@ class Game:
                 if moves[pygame.K_SPACE]:
                     self.__pause = not self.__pause
 
-            if self.__dtg > 200:
+            if self.__dtg > 200 and not self.__game.get_game_over():
                 self.__dtg = 0
                 if not self.__pause:
                     self.__game.tick()

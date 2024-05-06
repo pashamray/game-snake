@@ -21,6 +21,7 @@ class SnakeGame:
 
         self.__moves = {"up": True, "down": False, "right": False, "left": False}
         self.__score = 0
+        self.__game_over = False
 
     def get_snake(self) -> list:
         return self.__snake
@@ -30,6 +31,9 @@ class SnakeGame:
 
     def get_score(self) -> int:
         return self.__score
+
+    def get_game_over(self) -> bool:
+        return self.__game_over
 
     def move_up(self) -> None:
         if not self.__moves["down"]:
@@ -48,6 +52,9 @@ class SnakeGame:
             self.__moves = {"up": False, "down": False, "right": False, "left": True}
 
     def tick(self) -> None:
+        if self.__game_over:
+            return
+
         if self.__moves["up"]:
             self.__y += -1
             self.__x += 0
@@ -64,15 +71,24 @@ class SnakeGame:
             self.__y += 0
             self.__x += -1
 
+        if self.__x >= self.__width or self.__x < 0:
+            self.__game_over = True
+            return
+
+        if self.__y >= self.__height or self.__y < 0:
+            self.__game_over = True
+            return
+
         self.__snake.insert(0, (self.__x, self.__y))
-        last = self.__snake.pop()
+        snake_first = self.__snake[0]
+        snake_last = self.__snake.pop()
         try:
-            hint = self.__apples.index(self.__snake[0])
-            self.__apples.remove(self.__snake[0])
+            hint = self.__apples.index(snake_first)
+            self.__apples.remove(snake_first)
 
             self.__score += 1
             self.__apples.append((randrange(0, self.__width), randrange(0, self.__height)))
 
-            self.__snake.append(last)
+            self.__snake.append(snake_last)
         except ValueError:
             pass
