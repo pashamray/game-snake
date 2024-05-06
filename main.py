@@ -1,7 +1,7 @@
 from random import randrange
 import pygame
 
-from game import Snake
+from snake import Snake
 
 WIDTH = 800
 HEIGHT = 600
