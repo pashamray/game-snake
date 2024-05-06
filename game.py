@@ -1,3 +1,5 @@
+from random import randrange
+
 
 class Snake:
     __width = 0
@@ -9,6 +11,7 @@ class Snake:
     __snake_len = 0
     __snake = []
 
+    __apples_count = 0
     __apples = []
 
     __moves = {"up": False, "down": False, "right": False, "left": False}
@@ -25,12 +28,17 @@ class Snake:
         for i in range(0, self.__snake_len):
             self.__snake.append((self.__x, self.__y + i))
 
-        self.__apples = []
+        self.__apples_count = 2
+        for i in range(0, self.__apples_count):
+            self.__apples.append((randrange(0, self.__width), randrange(0, self.__height)))
 
         self.__moves = {"up": True, "down": False, "right": False, "left": False}
 
     def get_snake(self) -> list:
         return self.__snake
+
+    def get_apples(self) -> list:
+        return self.__apples
 
     def move_up(self) -> None:
         if not self.__moves["down"]:
@@ -71,5 +79,13 @@ class Snake:
                 self.__x += -1
 
             self.__snake.insert(0, (self.__x, self.__y))
-            self.__snake.pop()
-        # print(self.__moves)
+            last = self.__snake.pop()
+            try:
+                hint = self.__apples.index(self.__snake[0])
+                self.__apples.remove(self.__snake[0])
+
+                self.__apples.append((randrange(0, self.__width), randrange(0, self.__height)))
+
+                self.__snake.append(last)
+            except ValueError:
+                pass

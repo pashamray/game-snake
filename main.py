@@ -14,18 +14,7 @@ screen = pygame.display.set_mode((WIDTH, HEIGHT))
 clock = pygame.time.Clock()
 running = True
 
-dt = 0
-dx = 0
-dy = -1
-
-dir_up = pygame.K_w
-dir_down = pygame.K_s
-dir_left = pygame.K_a
-dir_right = pygame.K_d
-
-game = Snake((40, 30))
-
-print(game.get_snake())
+game = Snake((WIDTH / SIZE, HEIGHT / SIZE))
 
 while running:
     # fill the screen with a color to wipe away anything from last frame
@@ -39,60 +28,30 @@ while running:
             width = 0
         pygame.draw.rect(screen, color, (snakeX * SIZE, snakeY * SIZE, SIZE, SIZE), width, border_radius=4)
 
-    # draw apple
-    # (appleX, appleY) = apple
-    # pygame.draw.rect(screen, "red", (appleX, appleY, SIZE, SIZE), border_radius=int(SIZE / 2))
+    # draw apples
+    for i, (appleX, appleY) in enumerate(game.get_apples()):
+        pygame.draw.rect(screen, "red", (appleX * SIZE, appleY * SIZE, SIZE, SIZE), border_radius=int(SIZE / 2))
 
     moves = pygame.key.get_pressed()
-    if moves[dir_up]:
+    if moves[pygame.K_w]:
         game.move_up()
 
-    if moves[dir_down]:
+    if moves[pygame.K_s]:
         game.move_down()
 
-    if moves[dir_right]:
+    if moves[pygame.K_d]:
         game.move_right()
 
-    if moves[dir_left]:
+    if moves[pygame.K_a]:
         game.move_left()
-
-
-    # if dx == 0 and moves_x != 0:
-    #     dx = moves_x
-    #     dy = 0
-    # if dy == 0 and moves_y != 0:
-    #     dx = 0
-    #     dy = moves_y
-    #
-    # if dt > 200:
-    #     dt = 0
-    #     x += dx * SIZE
-    #     y += dy * SIZE
-    #
-    #     if x < 0:
-    #         x = WIDTH - SIZE
-    #     if x > WIDTH - SIZE:
-    #         x = 0
-    #
-    #     if y < 0:
-    #         y = HEIGHT - SIZE
-    #     if y > HEIGHT - SIZE:
-    #         y = 0
-    #
-    #     if snake[0] != apple:
-    #         snake.pop()
-    #     if snake[0] == apple:
-    #         apple = (randrange(0, WIDTH, SIZE), randrange(0, HEIGHT, SIZE))
-    #     snake.insert(0, (x, y))
 
     # flip() the display to put your work on screen
     pygame.display.flip()
 
     game.tick()
-    # limits FPS to 60
     # dt is delta time in seconds since last frame, used for framerate-
     # independent physics.
-    dt += clock.tick(1000)
+    clock.tick(1000)
 
     # poll for events
     # pygame.QUIT event means the user clicked X to close your window
