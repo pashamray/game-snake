@@ -31,6 +31,16 @@ class Game:
                 )
             )
         )
+        self.__game_pause_screen = self.__screen.subsurface(
+            pygame.Rect(
+                (
+                    self.__screen.get_width() // 4,
+                    self.__screen.get_height() // 4,
+                    self.__screen.get_width() // 2,
+                    self.__screen.get_height() // 4
+                )
+            )
+        )
 
         self.__font = pygame.font.SysFont("notosansmono", 20)
         self.__font_big = pygame.font.SysFont("notosansmono", 60)
@@ -46,6 +56,7 @@ class Game:
 
     def run(self) -> None:
         while self.__running:
+
             if not self.__game.get_game_over():
                 # fill the screen with a color to wipe away anything from last frame
                 self.__screen.fill((8, 56, 32))
@@ -83,6 +94,41 @@ class Game:
                 self.__screen.blit(time_txt, (10, 80))
                 self.__screen.blit(time_num, (10, 100))
 
+                if self.__dtk > 100:
+                    self.__dtk = 0
+                    moves = pygame.key.get_pressed()
+                    if moves[pygame.K_SPACE]:
+                        self.__pause = not self.__pause
+
+                    if moves[pygame.K_w]:
+                        self.__game.move_up()
+
+                    if moves[pygame.K_s]:
+                        self.__game.move_down()
+
+                    if moves[pygame.K_d]:
+                        self.__game.move_right()
+
+                    if moves[pygame.K_a]:
+                        self.__game.move_left()
+
+                if self.__dtg > 200 and not self.__game.get_game_over():
+                    self.__dtg = 0
+                    if not self.__pause:
+                        self.__game.tick()
+
+            # draw game pause screen
+            if self.__pause and not self.__game.get_game_over():
+                self.__game_pause_screen.fill("green")
+                game_pause_txt = self.__font_big.render("PAUSE", True, (255, 255, 255))
+                self.__game_pause_screen.blit(
+                    game_pause_txt,
+                    (
+                        (self.__game_pause_screen.get_width() - game_pause_txt.get_width()) / 2,
+                        (self.__game_pause_screen.get_height() - game_pause_txt.get_height()) / 2,
+                    )
+                )
+
             # draw game over screen
             if self.__game.get_game_over():
                 self.__game_over_screen.fill("red")
@@ -95,32 +141,9 @@ class Game:
                     )
                 )
 
-
             # flip() the display to put your work on screen
             pygame.display.flip()
 
-            if self.__dtk > 100:
-                self.__dtk = 0
-                moves = pygame.key.get_pressed()
-                if moves[pygame.K_w]:
-                    self.__game.move_up()
-
-                if moves[pygame.K_s]:
-                    self.__game.move_down()
-
-                if moves[pygame.K_d]:
-                    self.__game.move_right()
-
-                if moves[pygame.K_a]:
-                    self.__game.move_left()
-
-                if moves[pygame.K_SPACE]:
-                    self.__pause = not self.__pause
-
-            if self.__dtg > 200 and not self.__game.get_game_over():
-                self.__dtg = 0
-                if not self.__pause:
-                    self.__game.tick()
             # dt is delta time in seconds since last frame, used for framerate-
             # independent physics.
             dt = self.__clock.tick(100)
