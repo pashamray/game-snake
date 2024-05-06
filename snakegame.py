@@ -20,6 +20,7 @@ class SnakeGame:
             self.__apples.append((randrange(0, self.__width), randrange(0, self.__height)))
 
         self.__moves = {"up": True, "down": False, "right": False, "left": False}
+        self.__moves_allow = False
         self.__score = 0
         self.__game_over = False
 
@@ -36,20 +37,24 @@ class SnakeGame:
         return self.__game_over
 
     def move_up(self) -> None:
-        if not self.__moves["down"]:
+        if not self.__moves["down"] and self.__moves_allow:
             self.__moves = {"up": True, "down": False, "right": False, "left": False}
+            self.__moves_allow = False
 
     def move_down(self) -> None:
-        if not self.__moves["up"]:
+        if not self.__moves["up"] and self.__moves_allow:
             self.__moves = {"up": False, "down": True, "right": False, "left": False}
+            self.__moves_allow = False
 
     def move_right(self) -> None:
-        if not self.__moves["left"]:
+        if not self.__moves["left"] and self.__moves_allow:
             self.__moves = {"up": False, "down": False, "right": True, "left": False}
+            self.__moves_allow = False
 
     def move_left(self) -> None:
-        if not self.__moves["right"]:
+        if not self.__moves["right"] and self.__moves_allow:
             self.__moves = {"up": False, "down": False, "right": False, "left": True}
+            self.__moves_allow = False
 
     def tick(self) -> None:
         if self.__game_over:
@@ -79,11 +84,18 @@ class SnakeGame:
             self.__game_over = True
             return
 
+        try:
+            self.__snake.index((self.__x, self.__y))
+            self.__game_over = True
+            return
+        except ValueError:
+            pass
+
         self.__snake.insert(0, (self.__x, self.__y))
         snake_first = self.__snake[0]
         snake_last = self.__snake.pop()
         try:
-            hint = self.__apples.index(snake_first)
+            self.__apples.index(snake_first)
             self.__apples.remove(snake_first)
 
             self.__score += 1
@@ -92,3 +104,5 @@ class SnakeGame:
             self.__snake.append(snake_last)
         except ValueError:
             pass
+
+        self.__moves_allow = True
