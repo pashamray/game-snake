@@ -1,8 +1,16 @@
+from enum import Enum
 from random import randrange
 
 
-class SnakeGame:
+class SnakeDirection(Enum):
+    NONE = 0
+    UP = 1
+    DOWN = 2
+    RIGHT = 3
+    LEFT = 4
 
+
+class SnakeGame:
     def __init__(self, area: tuple):
         [self.__width, self.__height] = area
 
@@ -19,8 +27,6 @@ class SnakeGame:
         for i in range(0, self.__apples_count):
             self.__apples.append((randrange(0, self.__width), randrange(0, self.__height)))
 
-        self.__moves = {"up": True, "down": False, "right": False, "left": False}
-        self.__moves_allow = False
         self.__score = 0
         self.__game_over = False
 
@@ -36,43 +42,23 @@ class SnakeGame:
     def get_game_over(self) -> bool:
         return self.__game_over
 
-    def move_up(self) -> None:
-        if not self.__moves["down"] and self.__moves_allow:
-            self.__moves = {"up": True, "down": False, "right": False, "left": False}
-            self.__moves_allow = False
-
-    def move_down(self) -> None:
-        if not self.__moves["up"] and self.__moves_allow:
-            self.__moves = {"up": False, "down": True, "right": False, "left": False}
-            self.__moves_allow = False
-
-    def move_right(self) -> None:
-        if not self.__moves["left"] and self.__moves_allow:
-            self.__moves = {"up": False, "down": False, "right": True, "left": False}
-            self.__moves_allow = False
-
-    def move_left(self) -> None:
-        if not self.__moves["right"] and self.__moves_allow:
-            self.__moves = {"up": False, "down": False, "right": False, "left": True}
-            self.__moves_allow = False
-
-    def tick(self) -> None:
+    def tick(self, direction: SnakeDirection) -> None:
         if self.__game_over:
             return
 
-        if self.__moves["up"]:
+        if direction == SnakeDirection.UP:
             self.__y += -1
             self.__x += 0
 
-        if self.__moves["down"]:
+        if direction == SnakeDirection.DOWN:
             self.__y += 1
             self.__x += 0
 
-        if self.__moves["right"]:
+        if direction == SnakeDirection.RIGHT:
             self.__y += 0
             self.__x += 1
 
-        if self.__moves["left"]:
+        if direction == SnakeDirection.LEFT:
             self.__y += 0
             self.__x += -1
 
@@ -97,12 +83,9 @@ class SnakeGame:
         try:
             self.__apples.index(snake_first)
             self.__apples.remove(snake_first)
-
-            self.__score += 1
             self.__apples.append((randrange(0, self.__width), randrange(0, self.__height)))
 
             self.__snake.append(snake_last)
+            self.__score += 10
         except ValueError:
             pass
-
-        self.__moves_allow = True
