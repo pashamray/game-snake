@@ -28,41 +28,45 @@ class Game:
         self.__game = SnakeGame(
             (self.__screen_game.get_width() / self.__size, self.__screen_game.get_height() / self.__size)
         )
-        self.__direction = SnakeDirection.UP
-        self.__running = True
+
         self.__pause = False
-        self.__dtk = 0
-        self.__dtg = 0
         self.__start_time = time.perf_counter()
 
     def run(self) -> None:
-        while self.__running:
-            if not self.__game.get_game_over() and not self.__pause and self.__dtg > 200:
-                self.__dtg = 0
+        direction = SnakeDirection.UP
+        running = True
+        dt = 0
 
-                direction = self.__get_direction()
-                if direction is not None:
-                    self.__direction = direction
-
-                self.__game.tick(self.__direction)
-
+        while running:
+            if dt > 200:
+                dt = 0
+                if not self.__game.get_game_over() and not self.__pause:
+                    self.__game.tick(direction)
             self.__draw_items()
-            self.__scan_keys()
 
             # flip() the display to put your work on screen
             pygame.display.flip()
 
             # dt is delta time in seconds since last frame, used for framerate-
             # independent physics.
-            dt = self.__clock.tick(100)
-            self.__dtk += dt
-            self.__dtg += dt
+            dt += self.__clock.tick(100)
 
             # poll for events
             # pygame.QUIT event means the user clicked X to close your window
             for event in pygame.event.get():
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_SPACE:
+                        self.__pause = not self.__pause
+                    if event.key == pygame.K_w:
+                        direction = SnakeDirection.UP
+                    if event.key == pygame.K_s:
+                        direction = SnakeDirection.DOWN
+                    if event.key == pygame.K_d:
+                        direction = SnakeDirection.RIGHT
+                    if event.key == pygame.K_a:
+                        direction = SnakeDirection.LEFT
                 if event.type == pygame.QUIT:
-                    self.__running = False
+                    running = False
 
         pygame.quit()
 
@@ -169,24 +173,3 @@ class Game:
 
         self.__init_screen_pause()
         self.__init_screen_game_over()
-
-    def __scan_keys(self):
-        if self.__dtk > 100:
-            self.__dtk = 0
-
-            self.__moves = pygame.key.get_pressed()
-            if self.__moves[pygame.K_SPACE]:
-                self.__pause = not self.__pause
-
-    def __get_direction(self) -> SnakeDirection:
-        if self.__moves[pygame.K_w] and self.__direction is not SnakeDirection.DOWN:
-            return SnakeDirection.UP
-
-        if self.__moves[pygame.K_s] and self.__direction is not SnakeDirection.UP:
-            return SnakeDirection.DOWN
-
-        if self.__moves[pygame.K_d] and self.__direction is not SnakeDirection.LEFT:
-            return SnakeDirection.RIGHT
-
-        if self.__moves[pygame.K_a] and self.__direction is not SnakeDirection.RIGHT:
-            return SnakeDirection.LEFT

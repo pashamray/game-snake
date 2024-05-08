@@ -29,6 +29,8 @@ class SnakeGame:
 
         self.__score = 0
         self.__game_over = False
+        self.__dx = 0
+        self.__dy = -1
 
     def get_snake(self) -> list:
         return self.__snake
@@ -46,21 +48,21 @@ class SnakeGame:
         if self.__game_over:
             return
 
-        if direction == SnakeDirection.UP:
-            self.__y += -1
-            self.__x += 0
+        if direction == SnakeDirection.UP and self.__dy == 0:
+            self.__dx = 0
+            self.__dy = -1
+        if direction == SnakeDirection.DOWN and self.__dy == 0:
+            self.__dx = 0
+            self.__dy = 1
+        if direction == SnakeDirection.RIGHT and self.__dx == 0:
+            self.__dx = 1
+            self.__dy = 0
+        if direction == SnakeDirection.LEFT and self.__dx == 0:
+            self.__dx = -1
+            self.__dy = 0
 
-        if direction == SnakeDirection.DOWN:
-            self.__y += 1
-            self.__x += 0
-
-        if direction == SnakeDirection.RIGHT:
-            self.__y += 0
-            self.__x += 1
-
-        if direction == SnakeDirection.LEFT:
-            self.__y += 0
-            self.__x += -1
+        self.__x += self.__dx
+        self.__y += self.__dy
 
         if self.__x >= self.__width or self.__x < 0:
             self.__game_over = True
