@@ -26,7 +26,10 @@ class Game:
         self.__init_items()
 
         self.__game = SnakeGame(
-            (self.__screen_game.get_width() / self.__size, self.__screen_game.get_height() / self.__size)
+            (
+                int(self.__screen_game.get_width() / self.__size),
+                int(self.__screen_game.get_height() / self.__size)
+            )
         )
 
         self.__pause = False
@@ -168,7 +171,7 @@ class Game:
         self.__draw_screen_game_over()
 
     def __init_items(self):
-        self.__font = pygame.font.SysFont("notosansmono", 20)
+        self.__font = pygame.font.SysFont("notosansmono", 16)
         self.__font_big = pygame.font.SysFont("notosansmono", 60)
 
         self.__init_screen_pause()
