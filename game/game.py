@@ -37,7 +37,7 @@ class Game:
             self.__game_over = True
             return
 
-        if CollisionDetector.check_apple_collision(self.__snake.body[0], self.__fruits):
+        if CollisionDetector.check_fruit_collision(self.__snake.body[0], self.__fruits):
             self.__snake.grow()
             self.__score += 1
             self.__fruits = [fruit for fruit in self.__fruits if fruit.position() != self.__snake.body[0]]

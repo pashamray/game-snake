@@ -10,5 +10,5 @@ class CollisionDetector:
         return head in snake_body[1:]
 
     @staticmethod
-    def check_apple_collision(snake_head: tuple, fruits: list):
+    def check_fruit_collision(snake_head: tuple, fruits: list):
         return snake_head in [fruit.position() for fruit in fruits]
