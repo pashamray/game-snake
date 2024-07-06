@@ -1,11 +1,8 @@
 import time
-
 import pygame
 
-from snakegame import SnakeGame, SnakeDirection
 
-
-class Game:
+class UserInterface:
 
     def __init__(self) -> None:
         width = 800
@@ -13,10 +10,13 @@ class Game:
         game_width = 600
         game_height = 600
 
-        self.__size = 20
+        self.__segment_size = 20
+        self.__game_over = None
+        self.__pause = None
+        self.__score = None
+        self.__fruits = None
+        self.__snake = None
 
-        # pygame setup
-        pygame.init()
         self.__clock = pygame.time.Clock()
         self.__screen_main = pygame.display.set_mode((width, height))
         self.__screen_game = self.__screen_main.subsurface(
@@ -24,78 +24,62 @@ class Game:
         )
 
         self.__init_items()
-
-        self.__game = SnakeGame(
-            (
-                int(self.__screen_game.get_width() / self.__size),
-                int(self.__screen_game.get_height() / self.__size)
-            )
-        )
-
-        self.__pause = False
         self.__start_time = time.perf_counter()
 
-    def run(self) -> None:
-        direction = SnakeDirection.UP
-        running = True
-        dt = 0
+    def set_snake(self, snake: list) -> None:
+        self.__snake = snake
 
-        while running:
-            if dt > 200:
-                dt = 0
-                if not self.__game.get_game_over() and not self.__pause:
-                    self.__game.tick(direction)
-            self.__draw_items()
+    def set_fruits(self, fruits: list) -> None:
+        self.__fruits = fruits
 
-            # flip() the display to put your work on screen
-            pygame.display.flip()
+    def set_game_over(self, game_over: bool) -> None:
+        self.__game_over = game_over
 
-            # dt is delta time in seconds since last frame, used for framerate-
-            # independent physics.
-            dt += self.__clock.tick(100)
+    def set_score(self, score: int) -> None:
+        self.__score = score
 
-            # poll for events
-            # pygame.QUIT event means the user clicked X to close your window
-            for event in pygame.event.get():
-                if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_SPACE:
-                        self.__pause = not self.__pause
-                    if event.key == pygame.K_w:
-                        direction = SnakeDirection.UP
-                    if event.key == pygame.K_s:
-                        direction = SnakeDirection.DOWN
-                    if event.key == pygame.K_d:
-                        direction = SnakeDirection.RIGHT
-                    if event.key == pygame.K_a:
-                        direction = SnakeDirection.LEFT
-                if event.type == pygame.QUIT:
-                    running = False
+    def set_pause(self, pause: bool):
+        self.__pause = pause
 
-        pygame.quit()
+    def draw(self) -> None:
+        if not self.__game_over and not self.__pause:
+            # fill the screen with a color to wipe away anything from last frame
+            self.__screen_main.fill((8, 56, 32))
+            self.__screen_game.fill("dark green")
+
+            self.__draw_snake()
+            self.__draw_fruits()
+
+            self.__draw_scores()
+            self.__draw_time()
+
+        self.__draw_screen_pause()
+        self.__draw_screen_game_over()
 
     def __draw_snake(self):
-        for i, (snakeX, snakeY) in enumerate(self.__game.get_snake()):
+        for i, (snakeX, snakeY) in enumerate(self.__snake):
             color = "green"
             width = 2
             if i == 0:
                 width = 0
             pygame.draw.rect(
                 self.__screen_game, color,
-                (snakeX * self.__size, snakeY * self.__size, self.__size, self.__size), width,
+                (snakeX * self.__segment_size, snakeY * self.__segment_size, self.__segment_size, self.__segment_size), width,
                 border_radius=4
             )
 
-    def __draw_apples(self):
-        for i, (appleX, appleY) in enumerate(self.__game.get_apples()):
+    def __draw_fruits(self):
+        for fruit in self.__fruits:
+            fruitX, fruitY = fruit.position()
             pygame.draw.rect(
-                self.__screen_game, "red",
-                (appleX * self.__size, appleY * self.__size, self.__size, self.__size),
-                border_radius=int(self.__size / 2)
+                self.__screen_game, fruit.color(),
+                (fruitX * self.__segment_size, fruitY * self.__segment_size, self.__segment_size, self.__segment_size),
+                border_radius=int(self.__segment_size / 2)
             )
 
     def __draw_scores(self):
         score_txt = self.__font.render("SCORE:", True, (255, 255, 255))
-        score_num = self.__font.render(str(self.__game.get_score()), True, (255, 255, 255))
+        score_num = self.__font.render(str(self.__score), True, (255, 255, 255))
         self.__screen_main.blit(score_txt, (10, 20))
         self.__screen_main.blit(score_num, (10, 40))
 
@@ -119,7 +103,7 @@ class Game:
         )
 
     def __draw_screen_pause(self):
-        if self.__pause and not self.__game.get_game_over():
+        if self.__pause and not self.__game_over:
             self.__game_pause_screen.fill("green")
             game_pause_txt = self.__font_big.render("PAUSE", True, (255, 255, 255))
             self.__game_pause_screen.blit(
@@ -144,7 +128,7 @@ class Game:
 
     def __draw_screen_game_over(self):
         # draw game over screen
-        if self.__game.get_game_over():
+        if self.__game_over:
             self.__game_over_screen.fill("red")
             game_over_txt = self.__font_big.render("GAME OVER", True, (255, 255, 255))
             self.__game_over_screen.blit(
@@ -154,21 +138,6 @@ class Game:
                     (self.__game_over_screen.get_height() - game_over_txt.get_height()) / 2,
                 )
             )
-
-    def __draw_items(self):
-        if not self.__game.get_game_over() and not self.__pause:
-            # fill the screen with a color to wipe away anything from last frame
-            self.__screen_main.fill((8, 56, 32))
-            self.__screen_game.fill("dark green")
-
-            self.__draw_snake()
-            self.__draw_apples()
-
-            self.__draw_scores()
-            self.__draw_time()
-
-        self.__draw_screen_pause()
-        self.__draw_screen_game_over()
 
     def __init_items(self):
         self.__font = pygame.font.SysFont("notosansmono", 16)

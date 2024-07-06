@@ -18,12 +18,12 @@
 ## Screenshots
 
 ### game play
-![game play](./img/game_play.png)
+![game play](doc/img/game_play.png)
 
 ### game pause
-![game pause](./img/game_pause.png)
+![game pause](doc/img/game_pause.png)
 
 ### game over
-![game over](./img/game_over.png)
+![game over](doc/img/game_over.png)
 
 
