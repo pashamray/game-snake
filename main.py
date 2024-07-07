@@ -8,11 +8,14 @@ from game.game import Game
 pygame.init()
 clock = pygame.time.Clock()
 
-user_interface = UserInterface()
-game = Game((int(600 / 20), int(600 / 20)))
+block_size = 20
+game_area = (600, 600)
+
+user_interface = UserInterface(game_area, block_size)
+game = Game(game_area, block_size)
 
 pause = False
-direction = SnakeDirection.DOWN
+direction = SnakeDirection.UP
 
 while True:
     # poll for events

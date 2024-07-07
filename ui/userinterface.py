@@ -4,13 +4,13 @@ import pygame
 
 class UserInterface:
 
-    def __init__(self) -> None:
-        width = 800
-        height = 600
-        game_width = 600
-        game_height = 600
+    def __init__(self, game_area: tuple, block_size: int) -> None:
+        game_width, game_height = game_area
 
-        self.__segment_size = 20
+        width = game_width + 200
+        height = game_height
+
+        self.__block_size = block_size
         self.__game_over = None
         self.__pause = None
         self.__score = None
@@ -64,7 +64,7 @@ class UserInterface:
                 width = 0
             pygame.draw.rect(
                 self.__screen_game, color,
-                (snakeX * self.__segment_size, snakeY * self.__segment_size, self.__segment_size, self.__segment_size), width,
+                (snakeX * self.__block_size, snakeY * self.__block_size, self.__block_size, self.__block_size), width,
                 border_radius=4
             )
 
@@ -73,8 +73,8 @@ class UserInterface:
             fruitX, fruitY = fruit.position()
             pygame.draw.rect(
                 self.__screen_game, fruit.color(),
-                (fruitX * self.__segment_size, fruitY * self.__segment_size, self.__segment_size, self.__segment_size),
-                border_radius=int(self.__segment_size / 2)
+                (fruitX * self.__block_size, fruitY * self.__block_size, self.__block_size, self.__block_size),
+                border_radius=int(self.__block_size / 2)
             )
 
     def __draw_scores(self):
@@ -140,8 +140,8 @@ class UserInterface:
             )
 
     def __init_items(self):
-        self.__font = pygame.font.SysFont("notosansmono", 16)
-        self.__font_big = pygame.font.SysFont("notosansmono", 60)
+        self.__font = pygame.font.Font("ui/fonts/homevideo/HomeVideo-Regular.otf", 16)
+        self.__font_big = pygame.font.Font("ui/fonts/homevideo/HomeVideo-Regular.otf", 60)
 
         self.__init_screen_pause()
         self.__init_screen_game_over()
