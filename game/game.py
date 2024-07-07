@@ -5,9 +5,16 @@ from game.snake import Snake, SnakeDirection
 
 class Game:
     def __init__(self, area: tuple, block_size: int):
+        self.__game_over = False
+        self.__score = 0
+        self.__fruits = None
+        self.__snake = None
         self.__width = int(area[0] / block_size)
         self.__height = int(area[1] / block_size)
 
+        self.reset()
+
+    def reset(self):
         init_position = (self.__width // 2, self.__height // 2)
 
         self.__snake = Snake(init_position, 3)

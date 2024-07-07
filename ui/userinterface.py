@@ -5,23 +5,34 @@ import pygame
 class UserInterface:
 
     def __init__(self, game_area: tuple, block_size: int) -> None:
-        game_width, game_height = game_area
+        self.__game_width, self.__game_height = game_area
 
-        width = game_width + 200
-        height = game_height
+        self.__width = self.__game_width + 200
+        self.__height = self.__game_height
 
         self.__block_size = block_size
+        self.__clock = None
+        self.__start_time = None
+        self.__screen_main = pygame.display.set_mode((self.__width, self.__height))
+        self.__screen_game = self.__screen_main.subsurface(
+            pygame.Rect(((self.__width - self.__game_width) / 2, (self.__height - self.__game_height) / 2, self.__game_width, self.__game_height))
+        )
         self.__game_over = None
         self.__pause = None
         self.__score = None
         self.__fruits = None
         self.__snake = None
 
+        self.reset()
+
+    def reset(self):
+        self.__game_over = False
+        self.__pause = False
+        self.__score = 0
+        self.__fruits = []
+        self.__snake = []
+
         self.__clock = pygame.time.Clock()
-        self.__screen_main = pygame.display.set_mode((width, height))
-        self.__screen_game = self.__screen_main.subsurface(
-            pygame.Rect(((width - game_width) / 2, (height - game_height) / 2, game_width, game_height))
-        )
 
         self.__init_items()
         self.__start_time = time.perf_counter()

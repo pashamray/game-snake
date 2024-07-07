@@ -17,6 +17,12 @@ user_interface = UserInterface(game_area, block_size)
 pause = False
 direction = SnakeDirection.UP
 
+
+def reset():
+    game.reset()
+    user_interface.reset()
+
+
 while True:
     # poll for events
     # pygame.QUIT event means the user clicked X to close your window
@@ -32,6 +38,10 @@ while True:
                 direction = SnakeDirection.RIGHT
             if event.key == pygame.K_a:
                 direction = SnakeDirection.LEFT
+            if event.key == pygame.K_r:
+                reset()
+                pause = False
+                direction = SnakeDirection.UP
         if event.type == pygame.QUIT:
             pygame.quit()
             exit()
