@@ -11,8 +11,8 @@ clock = pygame.time.Clock()
 block_size = 20
 game_area = (600, 600)
 
-user_interface = UserInterface(game_area, block_size)
 game = Game(game_area, block_size)
+user_interface = UserInterface(game_area, block_size)
 
 pause = False
 direction = SnakeDirection.UP
@@ -39,14 +39,12 @@ while True:
     if not pause:
         game.tick(direction)
 
-    user_interface.set_snake(game.get_snake())
-    user_interface.set_fruits(game.get_fruits())
-    user_interface.set_score(game.get_score())
-    user_interface.set_game_over(game.get_game_over())
-    user_interface.set_pause(pause)
-    user_interface.draw()
+        user_interface.set_snake(game.get_snake())
+        user_interface.set_fruits(game.get_fruits())
+        user_interface.set_score(game.get_score())
+        user_interface.set_game_over(game.get_game_over())
 
-    # flip() the display to put your work on screen
-    pygame.display.flip()
+    user_interface.set_pause(pause)
+    user_interface.tick()
 
     clock.tick(5)

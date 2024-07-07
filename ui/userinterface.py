@@ -41,7 +41,7 @@ class UserInterface:
     def set_pause(self, pause: bool):
         self.__pause = pause
 
-    def draw(self) -> None:
+    def tick(self) -> None:
         if not self.__game_over and not self.__pause:
             # fill the screen with a color to wipe away anything from last frame
             self.__screen_main.fill((8, 56, 32))
@@ -55,6 +55,9 @@ class UserInterface:
 
         self.__draw_screen_pause()
         self.__draw_screen_game_over()
+
+        # flip() the display to put your work on screen
+        pygame.display.flip()
 
     def __draw_snake(self):
         for i, (snakeX, snakeY) in enumerate(self.__snake):
