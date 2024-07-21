@@ -1,6 +1,7 @@
 import time
 import pygame
 
+
 class UserInterface:
 
     def __init__(self, game_area: tuple, block_size: int) -> None:
@@ -14,7 +15,8 @@ class UserInterface:
         self.__start_time = None
         self.__screen_main = pygame.display.set_mode((self.__width, self.__height))
         self.__screen_game = self.__screen_main.subsurface(
-            pygame.Rect(((self.__width - self.__game_width) / 2, (self.__height - self.__game_height) / 2, self.__game_width, self.__game_height))
+            pygame.Rect(((self.__width - self.__game_width) / 2, (self.__height - self.__game_height) / 2,
+                         self.__game_width, self.__game_height))
         )
         self.__game_over = None
         self.__pause = None
@@ -48,7 +50,7 @@ class UserInterface:
 
     def set_score(self, score: int) -> None:
         self.__score = score
-        self.__score_max = max([self.__score,  self.__score_max])
+        self.__score_max = max([self.__score, self.__score_max])
 
     def set_pause(self, pause: bool):
         self.__pause = pause
