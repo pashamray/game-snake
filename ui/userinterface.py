@@ -1,7 +1,6 @@
 import time
 import pygame
 
-
 class UserInterface:
 
     def __init__(self, game_area: tuple, block_size: int) -> None:
@@ -19,7 +18,8 @@ class UserInterface:
         )
         self.__game_over = None
         self.__pause = None
-        self.__score = None
+        self.__score = 0
+        self.__score_max = 0
         self.__fruits = None
         self.__snake = None
 
@@ -48,6 +48,7 @@ class UserInterface:
 
     def set_score(self, score: int) -> None:
         self.__score = score
+        self.__score_max = max([self.__score,  self.__score_max])
 
     def set_pause(self, pause: bool):
         self.__pause = pause
@@ -96,6 +97,11 @@ class UserInterface:
         score_num = self.__font.render(str(self.__score), True, (255, 255, 255))
         self.__screen_main.blit(score_txt, (10, 20))
         self.__screen_main.blit(score_num, (10, 40))
+
+        score_max_txt = self.__font.render("SCORE MAX:", True, (255, 255, 255))
+        score_max_num = self.__font.render(str(self.__score_max), True, (255, 255, 255))
+        self.__screen_main.blit(score_max_txt, (self.__width - 100 + 10, 20))
+        self.__screen_main.blit(score_max_num, (self.__width - 100 + 10, 40))
 
     def __draw_time(self):
         time_txt = self.__font.render("TIME:", True, (255, 255, 255))
